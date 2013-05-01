@@ -67,6 +67,7 @@
             $(serviceDiv).append(shareButton, shareCountContainer);
             $(containerDiv).append(serviceDiv);
             $(self.element).append(containerDiv);
+            self.hideServices();
             $(containerDiv).hover(self.showServices, self.hideServices);
         },
         /**
@@ -114,7 +115,6 @@
          * @param {Object} context The scope of the calling function.
          */
         shareForService: function (event, context) {
-            console.log("after change");
             var sourceElement = event.srcElement || event.target,
                 service = sourceElement.dataset.service,
                 successCallback = function(response) {
