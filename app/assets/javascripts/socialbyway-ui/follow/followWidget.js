@@ -79,18 +79,18 @@
 		 * @desc Function to show services on mouse hover.
 		 */
 		showServices : function() {
-			var serviceContainer = $('#follow-widget div.service-container');
-			serviceContainer.find('div').show();
-			serviceContainer.find("div.count-container").hide();
+            var servicesContainer = $("div.service-container");
+            servicesContainer.find("div").show();
+            servicesContainer.find("div.count-container").hide();
 		},
 		/**
 		 * @method
 		 * @desc Function to hide services when the widget loses focus.
 		 */
 		hideServices : function() {
-			var serviceContainer = $('#follow-widget div.service-container');
-			serviceContainer.find('div').hide();
-			serviceContainer.find("div.count-container").show();
+            var servicesContainer = $("div.service-container");
+            servicesContainer.find("div").hide();
+            servicesContainer.find("div.count-container").show();
 		},
 		/**
 		 * @method
@@ -99,7 +99,7 @@
 		updateForService : function(service) {
 			var self = this;
 			SBW.api.getFollowCount(service, self.options.userDetails[service], function(response) {
-				var targetContainer = $('#follow-widget div.service-container');
+				var targetContainer = $("div.service-container");
 				if (response && response.count) {
 					if (self.serviceCount[service]) {
 						self.count -= self.serviceCount[service];
@@ -120,11 +120,19 @@
 		followForService : function(event, context) {
 			var sourceElement = event.srcElement || event.target, service = sourceElement.dataset.service, self = this;
 				SBW.api.follow(service, context.options.userDetails[service], function(response) {
+                        var elem = context.element.find(".sbw-success-message");
+                        if (elem.length !== 0) {
+                            elem.html(elem.text().substr(0, elem.text().length - 1) + ", " + response.message+ ".");
+                        } else {
+                            context.element.append('<span class="sbw-success-message">'+response.message+'</span>');
+                        }
 						self.updateForService(service);
-					}, function(error) {
-						SBW.logger.error("Error while following on - " + service);
-				});
-		},
+					},function(response) {
+                    context.element.append('<span class="sbw-error-message">'+response.message+'.</span>');
+                });
+                context.element.find(".sbw-success-message").remove();
+                context.element.find(".sbw-error-message").remove();
+        },
 		/**
 		 * @method
 		 * @desc Function to destroy the widget.
