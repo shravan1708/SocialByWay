@@ -107,7 +107,7 @@ SBW.Controllers.Services.Twitter = SBW.Controllers.Services.ServiceController.ex
       service.accessObject.access_token = null;
       service.accessObject.tokenSecret = null;
       var url = service.signAndReturnUrl(this.requestTokenUrl, message);
-        this.sendTwitterRequest({
+          this.sendTwitterRequest({
           url: url,
           returnType: 'text'
         }, function (response) {
@@ -583,22 +583,52 @@ SBW.Controllers.Services.Twitter = SBW.Controllers.Services.ServiceController.ex
           if (isFollowing === true) {
             service.unSubscribe({
               screen_name: name
-            }, successCallback, function (error) {
-              errorCallback(new SBW.Models.Error({
-                serviceName: 'twitter'
-              }));
+            }, function(success){
+
+                var successObject = new SBW.Models.Error();
+                successObject.message = "You are now unfollowing this page on twitter";
+                successObject.serviceName = "twitter";
+
+                successCallback(successObject);
+
+                }, function (error) {
+
+                var errorObject = new SBW.Models.Error();
+                errorObject.message = "Something went wrong while trying to follow on twitter";
+                errorObject.serviceName = "twitter";
+
+                 errorCallback(errorObject);
+
             });
           } else {
             service.subscribe({
               screen_name: name
-            }, successCallback, function (error) {
-              errorCallback(new SBW.Models.Error({
-                serviceName: 'twitter'
-              }));
+            }, function(success){
+
+                var successObject = new SBW.Models.Error();
+                successObject.message = "Successfully followed on twitter";
+                successObject.serviceName = "twitter";
+
+                successCallback(successObject);
+
+            }, function (error) {
+
+                var errorObject = new SBW.Models.Error();
+                errorObject.message = "Something went wrong while trying to follow on twitter";
+                errorObject.serviceName = "twitter";
+
+                errorCallback(errorObject);
+
             });
           }
         }, function (error) {
-          SBW.logger.error("In checkFollowStatus method - Twitter");
+
+            var errorObject = new SBW.Models.Error();
+            errorObject.message = "Something went wrong while trying to follow on twitter";
+            errorObject.serviceName = "twitter";
+
+            errorCallback(errorObject);
+
         });
       },
       callback = (function (name, successCallback, errorCallback) {
